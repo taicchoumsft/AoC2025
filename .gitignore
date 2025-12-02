@@ -3,6 +3,9 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+# remove the input files
+.txt 
+
 # dotenv files
 .env
 

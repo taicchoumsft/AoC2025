@@ -21,11 +21,11 @@ static long Solve(ReadOnlySpan<char> line, int take)
 {
     long[] dp = new long[take + 1];
 
-    for (int idx = 1; idx <= line.Length; ++idx)
+    foreach (var ch in line)
     {
         for (int rem = take; rem >= 1; --rem)
         {
-            dp[rem] = Math.Max(line[idx - 1] - '0' + 10 * dp[rem - 1], dp[rem]);
+            dp[rem] = Math.Max(ch - '0' + 10 * dp[rem - 1], dp[rem]);
         }
     }
     return dp[take];

@@ -23,9 +23,9 @@ static long Solve(ReadOnlySpan<char> line, int take)
 
     foreach (var ch in line)
     {
-        for (int rem = take; rem >= 1; --rem)
+        for (int t = take; t >= 1; --t)
         {
-            dp[rem] = Math.Max(ch - '0' + 10 * dp[rem - 1], dp[rem]);
+            dp[t] = Math.Max(ch - '0' + 10 * dp[t - 1], dp[t]);
         }
     }
     return dp[take];
@@ -35,11 +35,11 @@ static long Solve(ReadOnlySpan<char> line, int take)
 // static long Solve(ReadOnlySpan<char> line, int take)
 // {
 //     long[,] dp = new long[take + 1, line.Length + 1];
-//     for (int rem = 1; rem <= take; ++rem)
+//     for (int t = 1; t <= take; ++t)
 //     {
 //         for (int idx = 1; idx <= line.Length; ++idx)
 //         {
-//             dp[rem, idx] = Math.Max(line[idx - 1] - '0' + 10 * dp[rem - 1, idx - 1], dp[rem, idx - 1]);   
+//             dp[t, idx] = Math.Max(line[idx - 1] - '0' + 10 * dp[t - 1, idx - 1], dp[t, idx - 1]);   
 //         }
 //     }
 //     return dp[take, line.Length];

@@ -37,12 +37,8 @@ static object Part1(long[][] ranges, long[] ids)
         {
             // the inputs have comparatively few ranges to check, just bsearch on every range
             int idx = range.BinarySearch(id);
-            if (idx >= 0) return true; // matched exactly one of the ends of the range
-            else if (idx < 0)
-            {
-                idx = ~idx;
-                if (idx == 1) return true; // lower bound match
-            }
+            // matched exactly one of the ends of the range, or lowerbounded to end of range
+            if (idx >= 0 || ~idx == 1) return true; 
         }
         return false;
     }
@@ -63,7 +59,7 @@ static object Part2(long[][] ranges)
 
     List<long[]> merged = [ranges[0]];
 
-    // combine intervals if there's an overlap, otherwise create new interval
+    // extend end of last interval if there's an overlap, otherwise create new interval
     for (int i = 1; i < ranges.Length; ++i)
     {
         long begin = ranges[i][0], end = ranges[i][1];

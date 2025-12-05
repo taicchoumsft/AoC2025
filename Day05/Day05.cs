@@ -29,23 +29,26 @@ var (ranges, ids) = Parse(inputFile);
 Console.WriteLine("Part 1: " + Part1(ranges, ids));
 Console.WriteLine("Part 2: " + Part2(ranges));
 
-static bool DumbCheck(long[][] ranges, long id)
+static object Part1(long[][] ranges, long[] ids)
 {
-    foreach (var range in ranges)
+    bool DumbCheck(long id)
     {
-        // the inputs have comparatively few ranges to check, just bsearch on every range
-        int idx = range.BinarySearch(id);
-        if (idx >= 0) return true; // matched exactly one of the ends of the range
-        else if (idx < 0)
+        foreach (var range in ranges)
         {
-            idx = ~idx;
-            if (idx == 1) return true; // lower bound match
+            // the inputs have comparatively few ranges to check, just bsearch on every range
+            int idx = range.BinarySearch(id);
+            if (idx >= 0) return true; // matched exactly one of the ends of the range
+            else if (idx < 0)
+            {
+                idx = ~idx;
+                if (idx == 1) return true; // lower bound match
+            }
         }
+        return false;
     }
-    return false;
-}
 
-static object Part1(long[][] ranges, long[] ids) => ids.Where(id => DumbCheck(ranges, id)).Count();    
+    return ids.Where(DumbCheck).Count();
+}
 
 static object Part2(long[][] ranges)
 {
@@ -59,7 +62,7 @@ static object Part2(long[][] ranges)
     });
 
     List<long[]> merged = [ranges[0]];
-    
+
     // combine intervals if there's an overlap, otherwise create new interval
     for (int i = 1; i < ranges.Length; ++i)
     {

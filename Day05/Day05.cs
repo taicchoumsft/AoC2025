@@ -29,22 +29,8 @@ var (ranges, ids) = Parse(inputFile);
 Console.WriteLine("Part 1: " + Part1(ranges, ids));
 Console.WriteLine("Part 2: " + Part2(ranges));
 
-static object Part1(long[][] ranges, long[] ids)
-{
-    bool DumbCheck(long id)
-    {
-        foreach (var range in ranges)
-        {
-            // the inputs have comparatively few ranges to check, just bsearch on every range
-            int idx = range.BinarySearch(id);
-            // matched exactly one of the ends of the range, or lowerbounded to end of range
-            if (idx >= 0 || ~idx == 1) return true; 
-        }
-        return false;
-    }
-
-    return ids.Where(DumbCheck).Count();
-}
+static object Part1(long[][] ranges, long[] ids) => 
+    ids.Where(id => ranges.Any(range => range[0] <= id && id <= range[1])).Count();
 
 static object Part2(long[][] ranges)
 {

@@ -49,8 +49,8 @@ static object Part2(long[][] ranges)
     for (int i = 1; i < ranges.Length; ++i)
     {
         long begin = ranges[i][0], end = ranges[i][1];
-        long prev = merged[^1][^1];
-        if (begin <= prev) merged[^1][^1] = Math.Max(prev, end);
+        ref long prev = ref merged[^1][^1];
+        if (begin <= prev) prev = Math.Max(prev, end);
         else merged.Add(ranges[i]);
     }
 

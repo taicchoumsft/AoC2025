@@ -3,9 +3,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
-string inputFile = args.Length > 1 ? args[1] : "./Day05/sample.txt";
+string inputFile = args.Length > 1 ? args[1] : "input.txt";
 
 static (long[][], long[]) Parse(string inputFile)
 {
@@ -25,37 +24,33 @@ static (long[][], long[]) Parse(string inputFile)
     return ([.. range], [.. ids]);
 }
 
-Console.WriteLine("Part 1: " + Part1(inputFile));
-Console.WriteLine("Part 2: " + Part2(inputFile));
+var (ranges, ids) = Parse(inputFile);
 
-static bool DumbCheck(IEnumerable<long[]> ranges, long id)
+Console.WriteLine("Part 1: " + Part1(ranges, ids));
+Console.WriteLine("Part 2: " + Part2(ranges));
+
+static bool DumbCheck(long[][] ranges, long id)
 {
     foreach (var range in ranges)
     {
+        // the inputs have comparatively few ranges to check, just bsearch on every range
         int idx = range.BinarySearch(id);
-        if (idx >= 0) return true;
+        if (idx >= 0) return true; // matched exactly one of the ends of the range
         else if (idx < 0)
         {
             idx = ~idx;
-            if (idx == 1) return true;
+            if (idx == 1) return true; // lower bound match
         }
     }
     return false;
 }
 
-static object Part1(string inputFile)
+static object Part1(long[][] ranges, long[] ids) => ids.Where(id => DumbCheck(ranges, id)).Count();    
+
+static object Part2(long[][] ranges)
 {
-    var (rng, ids) = Parse(inputFile);
-
-    return ids.Where(id => DumbCheck(rng, id)).Count();    
-}
-
-static object Part2(string inputFile)
-{
-    var (rng, _) = Parse(inputFile);
-
     // merge intervals - sort and combine, standard LC level stuff
-    rng.Sort((a, b) =>
+    ranges.Sort((a, b) =>
     {
         // geezus this syntax is so unwieldly compared to python or C++
         int cmp = a[0].CompareTo(b[0]);
@@ -63,14 +58,15 @@ static object Part2(string inputFile)
         return a[1].CompareTo(b[1]);
     });
 
-    List<long[]> merged = [rng[0]];
-
-    for (int i = 1; i < rng.Length; ++i)
+    List<long[]> merged = [ranges[0]];
+    
+    // combine intervals if there's an overlap, otherwise create new interval
+    for (int i = 1; i < ranges.Length; ++i)
     {
-        long begin = rng[i][0], end = rng[i][1];
+        long begin = ranges[i][0], end = ranges[i][1];
         long prev = merged[^1][^1];
         if (begin <= prev) merged[^1][^1] = Math.Max(prev, end);
-        else merged.Add(rng[i]);
+        else merged.Add(ranges[i]);
     }
 
     return merged.Select(rng => rng[1] - rng[0] + 1).Sum();

@@ -44,15 +44,15 @@ static object Part2(string[] grid)
 
     for (int i = m - 1; i >= 0; --i)
     {
-        for (int j = 0; j < n; ++j)
+        for (int j = 1; j <= n; ++j)
         {
-            if (grid[i][j] == '^')
+            if (grid[i][j - 1] == '^')
             {
                 dp[j] = dp[j - 1] + dp[j + 1];
             }
         }
     }
 
-    return dp[grid[0].IndexOf('S')];
+    return dp[grid[0].IndexOf('S') + 1];
 }
 

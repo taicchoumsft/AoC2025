@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 string inputFile = args.Length > 1 ? args[1] : "input.txt";
 var lines = await File.ReadAllLinesAsync(inputFile);
@@ -54,8 +53,6 @@ static object Part2(string[] grid)
         }
     }
 
-    int col = grid[0].IndexOf('S');
-
-    return dp[col];
+    return dp[grid[0].IndexOf('S')];
 }
 

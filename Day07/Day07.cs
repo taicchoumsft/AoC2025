@@ -17,9 +17,9 @@ static object Part1(string[] grid)
     HashSet<int> cols = [start];
 
     int split = 0;
-    for (int i=1; i<grid.Length; ++i)
+    for (int i = 1; i < grid.Length; ++i)
     {
-        for (int j=0; j< grid[i].Length; ++j)
+        for (int j = 0; j < grid[i].Length; ++j)
         {
             if (grid[i][j] == '^' && cols.Contains(j))
             {
@@ -35,31 +35,27 @@ static object Part1(string[] grid)
 
 static object Part2(string[] grid)
 {
-    // dp now
+    // dp
     // f(i, j) = count of num ways starting at f(i, j)
     // f(i, j) = f(i + 1, j) if not ^.  else f(i + 1, j - 1)) + f(i + 1, j + 1))
     // f(m, -) = 1
     int m = grid.Length, n = grid[0].Length;
 
-    long[,] dp = new long[m + 1, n + 1];
-    for (int j = 0; j < n; ++j) dp[m, j] = 1;
+    long[] dp = [.. Enumerable.Repeat(1L, n + 1)];
 
     for (int i = m - 1; i >= 0; --i)
     {
-        for (int j=0; j<n; ++j)
+        for (int j = 0; j < n; ++j)
         {
             if (grid[i][j] == '^')
             {
-                dp[i, j] = dp[i + 1, j - 1] + dp[i + 1, j + 1];
-            } else
-            {
-                dp[i, j] = dp[i + 1, j];
+                dp[j] = dp[j - 1] + dp[j + 1];
             }
         }
     }
 
     int col = grid[0].IndexOf('S');
 
-    return dp[1, col];
+    return dp[col];
 }
 

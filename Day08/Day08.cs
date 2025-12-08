@@ -63,20 +63,14 @@ static object Part2(Point[] coords)
     return -1;
 }
 
-public record Point(long X, long Y, long Z)
+public record struct Point(long X, long Y, long Z)
 {
-    public long SquareDist(Point o)
-    {
-        long total = (X - o.X) * (X - o.X);
-        total += (Y - o.Y) * (Y - o.Y);
-        total += (Z - o.Z) * (Z - o.Z);
-        return total;
-    }
+    public readonly long SquareDist(Point o) => (X - o.X) * (X - o.X) + (Y - o.Y) * (Y - o.Y) + (Z - o.Z) * (Z - o.Z);
 }
 
 public class UnionFind(int n)
 {
-    readonly int[] arr = Enumerable.Range(0, n).ToArray();
+    readonly int[] arr = [.. Enumerable.Range(0, n)];
 
     int Parent(int i)
     {

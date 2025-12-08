@@ -16,23 +16,26 @@ Console.WriteLine("Part 2: " + Part2(coords));
 
 static object Part1(Point[] coords, int numConnections)
 {
-    PriorityQueue<(int, int), long> minHeap = new();
+    PriorityQueue<(int, int), long> maxHeap = new(Comparer<long>.Create((a, b) => b.CompareTo(a)));
 
     for (int i = 0; i < coords.Length; ++i)
     {
         for (int j = i + 1; j < coords.Length; ++j)
         {
-            minHeap.Enqueue((i, j), coords[i].SquareDist(coords[j]));
+            maxHeap.Enqueue((i, j), coords[i].SquareDist(coords[j]));
+            if (maxHeap.Count > numConnections)
+            {
+                maxHeap.Dequeue();
+            }
         }
     }
 
     // from here it's straight Union Find
     UnionFind uf = new(coords.Length);
-
-    int cnt = numConnections;
-    while (minHeap.Count > 0 && cnt-- > 0)
+    
+    while (maxHeap.Count > 0)
     {
-        (int idx_a, int idx_b) = minHeap.Dequeue();
+        (int idx_a, int idx_b) = maxHeap.Dequeue();
         uf.Join(idx_a, idx_b);
     }
     return uf.Top(3);
@@ -102,15 +105,15 @@ public class UnionFind(int n)
             else cnt[p] = 1;
         }
 
-        PriorityQueue<int, int> pq = new();
+        PriorityQueue<int, int> minHeap = new();
 
         foreach (var kvp in cnt)
         {
-            pq.Enqueue(kvp.Value, kvp.Value);
-            if (pq.Count > num) pq.Dequeue();
+            minHeap.Enqueue(kvp.Value, kvp.Value);
+            if (minHeap.Count > num) minHeap.Dequeue();
         }
 
-        return pq.UnorderedItems.Select(i => i.Element)
+        return minHeap.UnorderedItems.Select(i => i.Element)
                                 .Aggregate((acc, i) => acc * i);
     }
 }

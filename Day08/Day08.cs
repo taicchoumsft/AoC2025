@@ -7,12 +7,12 @@ using System.Data;
 
 string inputFile = args.Length > 1 ? args[1] : "input.txt";
 var lines = await File.ReadAllLinesAsync(inputFile);
-var coords = lines.Select(l => l.Split(",").Select(long.Parse).ToArray()).Select(arr => new Point(arr[0], arr[1], arr[2])).ToArray();
+var coords = lines.Select(l => l.Split(",").Select(long.Parse).ToArray())
+                .Select(arr => new Point(arr[0], arr[1], arr[2]))
+                .ToArray();
 
 Console.WriteLine("Part 1: " + Part1(coords, 1000));
 Console.WriteLine("Part 2: " + Part2(coords));
-
-
 
 static object Part1(Point[] coords, int numConnections)
 {
@@ -22,8 +22,7 @@ static object Part1(Point[] coords, int numConnections)
     {
         for (int j = i + 1; j < coords.Length; ++j)
         {
-            long dist = coords[i].SquareDist(coords[j]);
-            minHeap.Enqueue((i, j), dist);
+            minHeap.Enqueue((i, j), coords[i].SquareDist(coords[j]));
         }
     }
 
@@ -31,11 +30,10 @@ static object Part1(Point[] coords, int numConnections)
     UnionFind uf = new(coords.Length);
 
     int cnt = numConnections;
-    while (minHeap.Count > 0 && cnt > 0)
+    while (minHeap.Count > 0 && cnt-- > 0)
     {
         (int idx_a, int idx_b) = minHeap.Dequeue();
         uf.Join(idx_a, idx_b);
-        cnt--;
     }
     return uf.Top(3);
 }
@@ -48,19 +46,17 @@ static object Part2(Point[] coords)
     {
         for (int j = i + 1; j < coords.Length; ++j)
         {
-            long dist = coords[i].SquareDist(coords[j]);
-            minHeap.Enqueue((i, j), dist);
+            minHeap.Enqueue((i, j), coords[i].SquareDist(coords[j]));
         }
     }
 
-    // from here it's straight Union Find
     UnionFind uf = new(coords.Length);
 
     while (minHeap.Count > 0)
     {
         (int idx_a, int idx_b) = minHeap.Dequeue();
         uf.Join(idx_a, idx_b);
-        
+
         // suboptimal impl but more than fast enough
         if (uf.AllConnected())
         {

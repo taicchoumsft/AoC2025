@@ -58,10 +58,7 @@ static object Part2(Point[] coords)
         uf.Join(idx_a, idx_b);
 
         // suboptimal impl but more than fast enough
-        if (uf.AllConnected())
-        {
-            return coords[idx_a].X * coords[idx_b].X;
-        }
+        if (uf.AllConnected()) return coords[idx_a].X * coords[idx_b].X;
     }
     return -1;
 }
@@ -77,14 +74,9 @@ public record Point(long X, long Y, long Z)
     }
 }
 
-public class UnionFind
+public class UnionFind(int n)
 {
-    readonly int[] arr;
-
-    public UnionFind(int n)
-    {
-        arr = Enumerable.Range(0, n).ToArray();
-    }
+    readonly int[] arr = Enumerable.Range(0, n).ToArray();
 
     int Parent(int i)
     {
@@ -92,38 +84,28 @@ public class UnionFind
         return arr[i] = Parent(arr[i]);
     }
 
-    public bool Join(int i, int j)
+    public void Join(int i, int j)
     {
         int p_i = Parent(i);
         int p_j = Parent(j);
 
-        if (p_i == p_j) return false;
+        if (p_i == p_j) return;
 
         arr[p_j] = p_i;
-        return true;
     }
 
-    public bool AllConnected()
-    {
-        return arr.Select(Parent).ToHashSet().Count == 1;
-    }
+    public bool AllConnected() => arr.Select(Parent).ToHashSet().Count == 1;
 
     public int Top(int num)
     {
         // return num of the biggest circuits per the question
-
         Dictionary<int, int> cnt = [];
         foreach (var a in arr)
         {
             int p = Parent(a);
-            if (cnt.TryGetValue(p, out int val))
-            {
+            if (cnt.TryGetValue(p, out int val)) 
                 cnt[p] = val + 1;
-            }
-            else
-            {
-                cnt[p] = 1;
-            }
+            else cnt[p] = 1;
         }
 
         PriorityQueue<int, int> pq = new();
@@ -131,18 +113,11 @@ public class UnionFind
         foreach (var kvp in cnt)
         {
             pq.Enqueue(kvp.Value, kvp.Value);
-            if (pq.Count > num)
-            {
-                pq.Dequeue();
-            }
+            if (pq.Count > num) pq.Dequeue();
         }
 
-        int total = 1;
-        while (pq.Count > 0)
-        {
-            total *= pq.Dequeue();
-        }
-        return total;
+        return pq.UnorderedItems.Select(i => i.Element)
+                                .Aggregate((acc, i) => acc * i);
     }
 }
 

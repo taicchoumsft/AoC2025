@@ -5,7 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 
-string inputFile = args.Length > 1 ? args[1] : "input.txt";
+string inputFile = args.Length > 0 ? args[0] : "input.txt";
 var lines = await File.ReadAllLinesAsync(inputFile);
 var points = lines.Select(line => line.Split(',').Select(int.Parse).ToArray())
                     .Select(a => new Point(a[0], a[1])).ToArray();

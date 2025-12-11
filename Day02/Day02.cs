@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
-string inputFile = args.Length > 1 ? args[1] : "input.txt";
+string inputFile = args.Length > 0 ? args[0] : "input.txt";
 var line = (await File.ReadAllLinesAsync(inputFile))[0];
 
 Console.WriteLine("Part 1: " + Part1(line));

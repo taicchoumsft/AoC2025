@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
-string inputFile = args.Length > 1 ? args[1] : "input.txt";
+string inputFile = args.Length > 0 ? args[0] : "input.txt";
 
 static (long[][], long[]) Parse(string inputFile)
 {
